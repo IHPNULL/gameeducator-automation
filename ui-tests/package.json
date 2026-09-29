@@ -1,0 +1,14 @@
+{
+  "name": "gameeducator-automation-ui-tests",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Suite Cucumber (nivel de UI, via Playwright) da automacao de testes do GameEducator. Roda contra o frontend + backend de pe (perfil \"automation\", H2 em memoria com dados mocados).",
+  "scripts": {
+    "test": "cucumber-js"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.2.0",
+    "@playwright/test": "^1.49.1"
+  }
+}

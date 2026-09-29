@@ -1,0 +1,30 @@
+# Ambiente sob teste: backend (perfil "automation": H2 em memoria com dados fixos) + frontend (Nginx),
+# ambos construidos a partir dos seus repositorios. Nunca roda contra dados reais.
+#   BACKEND_CONTEXT / FRONTEND_CONTEXT: URL Git ou caminho local (ex.: ../../gameeducator-backend).
+# IMAGE_TAG: tag das imagens; a pipeline define e sobe com --no-build.
+name: gameeducator-automation
+
+services:
+  backend:
+    image: gameeducator-backend:${IMAGE_TAG:-local}
+    build:
+      context: ${BACKEND_CONTEXT:-https://github.com/IHPNULL/gameeducator-backend.git#main}
+      dockerfile: docker/backend.Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: automation
+      # Inclui http://frontend: a suite de UI conteinerizada acessa o frontend pelo nome do servico.
+      APP_CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost:4173,http://localhost:8081,http://frontend
+    ports:
+      - "8080:8080"
+
+  frontend:
+    image: gameeducator-frontend:${IMAGE_TAG:-local}
+    build:
+      context: ${FRONTEND_CONTEXT:-https://github.com/IHPNULL/gameeducator-frontend.git#main}
+      dockerfile: docker/frontend.Dockerfile
+      args:
+        VITE_API_BASE_URL: ""
+    depends_on:
+      - backend
+    ports:
+      - "8081:80"
