@@ -12,14 +12,16 @@ pipeline {
     }
 
     parameters {
-        string(name: 'BACKEND_CONTEXT', defaultValue: 'https://github.com/IHPNULL/gameeducator-backend.git#main', description: 'Contexto de build do backend (URL Git ou caminho)')
-        string(name: 'FRONTEND_CONTEXT', defaultValue: 'https://github.com/IHPNULL/gameeducator-frontend.git#main', description: 'Contexto de build do frontend (URL Git ou caminho)')
+        // Vazio = usa os repositorios locais montados no Jenkins local (LOCAL_SOURCES_ROOT)
+        // ou, sem eles, os repositorios no GitHub.
+        string(name: 'BACKEND_CONTEXT', defaultValue: '', description: 'Contexto de build do backend (URL Git ou caminho); vazio = padrao')
+        string(name: 'FRONTEND_CONTEXT', defaultValue: '', description: 'Contexto de build do frontend (URL Git ou caminho); vazio = padrao')
     }
 
     environment {
         COMPOSE_PROJECT_NAME = "gameeducator-automation-${env.BUILD_NUMBER}"
-        BACKEND_CONTEXT = "${params.BACKEND_CONTEXT}"
-        FRONTEND_CONTEXT = "${params.FRONTEND_CONTEXT}"
+        BACKEND_CONTEXT = "${params.BACKEND_CONTEXT ?: (env.LOCAL_SOURCES_ROOT ? env.LOCAL_SOURCES_ROOT + '/gameeducator-backend' : 'https://github.com/IHPNULL/gameeducator-backend.git#main')}"
+        FRONTEND_CONTEXT = "${params.FRONTEND_CONTEXT ?: (env.LOCAL_SOURCES_ROOT ? env.LOCAL_SOURCES_ROOT + '/gameeducator-frontend' : 'https://github.com/IHPNULL/gameeducator-frontend.git#main')}"
         IMAGE_TAG = "local-${env.BUILD_NUMBER}"
     }
 
@@ -28,9 +30,9 @@ pipeline {
             steps {
                 deleteDir()
                 script {
-                    if (env.LOCAL_SOURCE_DIR) {
+                    if (env.LOCAL_SOURCES_ROOT) {
                         sh """
-                            tar -C "${env.LOCAL_SOURCE_DIR}" \\
+                            tar -C "${env.LOCAL_SOURCES_ROOT}/gameeducator-automation" \\
                                 --exclude=.git --exclude=node_modules --exclude=target --exclude=ui-tests/reports \\
                                 -cf - . | tar -xf -
                         """

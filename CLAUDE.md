@@ -13,6 +13,8 @@ cd ui-tests && npm ci && npx playwright install --with-deps chromium && npm test
 docker compose -f docker/docker-compose.yml down -v
 ```
 
+Local sources instead of GitHub: `cp .env.example docker/.env`. In the local Jenkins (defined in the backend repo's `jenkins/`) the job `gameeducator-automation` builds backend/frontend from `/src/gameeducator-*` and auto-triggers after the backend or frontend job succeeds.
+
 Reports: `api-tests/target/cucumber-report/`, `ui-tests/reports/`.
 
 ## Structure

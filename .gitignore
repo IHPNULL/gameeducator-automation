@@ -6,3 +6,4 @@ ui-tests/reports/
 .idea
 *.iml
 .vscode/
+docker/.env

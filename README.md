@@ -12,12 +12,26 @@ Suítes Cucumber de ponta a ponta do GameEducator, rodando contra o
 
 **Integrantes (Grupo 6):** Italo Haas Pascoli (190294) · Maria Eduarda Mota Zandonade (200953)
 
+## Setup local (3 repositórios lado a lado)
+
+```
+gameeducator/                 # qualquer pasta
+├── gameeducator-backend      # API + Jenkins local (jenkins/)
+├── gameeducator-frontend     # app Vue
+└── gameeducator-automation   # suítes Cucumber (API + UI)
+```
+
+```bash
+mkdir gameeducator && cd gameeducator
+for r in backend frontend automation; do git clone https://github.com/IHPNULL/gameeducator-$r.git; done
+```
+
 ## Como rodar
 
 ```bash
 # 1. sobe backend (:8080) + frontend (:8081), construídos dos repositórios no GitHub
 docker compose -f docker/docker-compose.yml up -d --build
-#    usando checkouts locais: BACKEND_CONTEXT=../gameeducator-backend FRONTEND_CONTEXT=../gameeducator-frontend docker compose ...
+#    usando os checkouts locais em vez do GitHub: cp .env.example docker/.env (antes do comando acima)
 
 # 2. API
 cd api-tests && ./mvnw test                     # -Dautomation.baseUrl=http://outro:porta
