@@ -85,5 +85,17 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy (Fake / Simulado)') {
+            steps {
+                echo "=== EXECUTANDO FAKE DEPLOY (AUTOMACAO & HOMOLOGACAO) ==="
+                echo "Suites E2E de API e UI concluidas com SUCESSO."
+                echo "Ambiente homologado e aprovado para producao simulada."
+                sh """
+                    echo '[Fake Deploy] Artefatos de automacao arquivados com sucesso.'
+                    echo '[Fake Deploy] Sistema GameEducator totalmente validado ponta a ponta!'
+                """
+            }
+        }
     }
 }

@@ -1,0 +1,93 @@
+name: Pipeline de Testes End-to-End (E2E)
+
+on:
+  push:
+    branches: [ main, b1-architecture-lab ]
+  pull_request:
+    branches: [ main, b1-architecture-lab ]
+  workflow_dispatch:
+
+jobs:
+  e2e-automation:
+    name: Execucao das Suites E2E (API + UI)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositorio de automacao
+        uses: actions/checkout@v4
+
+      - name: Checkout do backend
+        uses: actions/checkout@v4
+        with:
+          repository: IHPNULL/gameeducator-backend
+          path: deps/gameeducator-backend
+          ref: b1-architecture-lab
+
+      - name: Checkout do frontend
+        uses: actions/checkout@v4
+        with:
+          repository: IHPNULL/gameeducator-frontend
+          path: deps/gameeducator-frontend
+          ref: b1-architecture-lab
+
+      - name: Configurar Java 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Subir Backend no perfil automation
+        run: |
+          cd deps/gameeducator-backend
+          ./mvnw spring-boot:start -Dspring-boot.run.profiles=automation &
+          echo "Aguardando subida do backend em :8080..."
+          for i in $(seq 1 45); do
+            if curl -fs http://localhost:8080/actuator/health >/dev/null 2>&1; then
+              echo "Backend UP!"
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Subir Frontend para os testes E2E
+        run: |
+          cd deps/gameeducator-frontend
+          npm ci
+          npm run build
+          npx vite preview --port 8081 --host &
+          echo "Aguardando subida do frontend em :8081..."
+          for i in $(seq 1 30); do
+            if curl -fs http://localhost:8081 >/dev/null 2>&1; then
+              echo "Frontend UP!"
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Executar Suite E2E de API (Cucumber-JVM + REST-assured)
+        run: |
+          cd api-tests
+          ./mvnw test -Dautomation.baseUrl=http://localhost:8080
+
+      - name: Executar Suite E2E de UI (Playwright + Cucumber.js)
+        run: |
+          cd ui-tests
+          npm ci
+          npx playwright install --with-deps chromium
+          AUTOMATION_FRONTEND_URL=http://localhost:8081 npm test
+
+      - name: Publicar relatorios de teste
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios-e2e
+          path: |
+            api-tests/target/cucumber-report/
+            api-tests/target/surefire-reports/
+            ui-tests/reports/
