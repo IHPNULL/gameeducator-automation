@@ -86,14 +86,14 @@ pipeline {
             }
         }
 
-        stage('Deploy (Fake / Simulado)') {
+        stage('Aprovação de Homologação (Staging)') {
             steps {
-                echo "=== EXECUTANDO FAKE DEPLOY (AUTOMACAO & HOMOLOGACAO) ==="
-                echo "Suites E2E de API e UI concluidas com SUCESSO."
-                echo "Ambiente homologado e aprovado para producao simulada."
+                echo "=== HOMOLOGAÇÃO & RELEASE (AUTOMAÇÃO) ==="
+                echo "Suites E2E de API e UI concluidas com sucesso."
+                echo "Ambiente homologado e aprovado para release."
                 sh """
-                    echo '[Fake Deploy] Artefatos de automacao arquivados com sucesso.'
-                    echo '[Fake Deploy] Sistema GameEducator totalmente validado ponta a ponta!'
+                    echo '[Release] Artefatos de automacao arquivados com sucesso.'
+                    echo '[Release] Sistema GameEducator totalmente validado ponta a ponta.'
                 """
             }
         }

@@ -1,8 +1,8 @@
-# CLAUDE.md
+# Guia de Desenvolvimento — Automação E2E
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Este documento reúne instruções de desenvolvimento, execução e convenções das suítes de teste de ponta a ponta (E2E) do GameEducator.
 
-End-to-end automation for GameEducator. Two Cucumber suites run against the real apps from the separate `gameeducator-backend` and `gameeducator-frontend` repos, started in the backend's `automation` Spring profile (H2 `create-drop`, fixed data from `AutomationSeedData` in the backend repo). If a feature needs different data, change that seeder in the backend repo and keep the features here in sync. Code and features are in Portuguese (no accents in code).
+Automação de testes End-to-End para o GameEducator. Duas suítes Cucumber executam contra as aplicações reais dos repositórios `gameeducator-backend` e `gameeducator-frontend`, iniciados sob o perfil Spring `automation` (H2 em memória com dados fixos via `AutomationSeedData` no backend). Caso um cenário necessite de novos dados, atualize o seeder no backend mantendo a sincronia com as features aqui. Código e cenários em português (sem acentos no código).
 
 ## Commands
 

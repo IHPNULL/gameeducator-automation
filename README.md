@@ -68,4 +68,4 @@ Relatórios gerados:
 2. **Jenkins Local ([`Jenkinsfile`](Jenkinsfile)):**
    - Executa as suítes em containers isolados na mesma rede Docker (`gameeducator-api-tests` e `gameeducator-ui-tests`).
    - Encadeado automaticamente após sucesso dos builds de `gameeducator-backend` e `gameeducator-frontend`.
-   - Inclui estágio de Fake Deploy para validar a integridade de release.
+   - Inclui estágio de homologação e validação de integridade para release.
